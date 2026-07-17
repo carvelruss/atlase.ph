@@ -1,0 +1,81 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid var(--at-border);
+  border-radius: var(--at-radius);
+  overflow: hidden;
+  background: var(--at-surface-muted);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.featuredTag {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: var(--at-accent);
+  color: #0f172a;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--at-radius-pill);
+}
+
+.dragHandle,
+.remove {
+  position: absolute;
+  border: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(15, 23, 42, 0.6);
+  font-size: 0.75rem;
+}
+
+.dragHandle {
+  bottom: 4px;
+  left: 4px;
+  cursor: grab;
+}
+
+.remove {
+  top: 4px;
+  right: 4px;
+
+  &:hover {
+    background: var(--at-danger);
+  }
+}
+
+.addTile {
+  aspect-ratio: 1;
+  border: 2px dashed var(--at-border-strong);
+  border-radius: var(--at-radius);
+  background: var(--at-surface);
+  color: var(--at-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--at-primary);
+    color: var(--at-primary);
+  }
+}

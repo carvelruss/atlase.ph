@@ -6,6 +6,12 @@ export interface StoreMenuLink {
   url: string | null;
 }
 
+export interface StoreCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export interface StoreSettings {
   store: {
     name: string;
@@ -15,6 +21,7 @@ export interface StoreSettings {
   };
   theme: Record<string, unknown>;
   menus: Record<string, StoreMenuLink[]>;
+  categories: StoreCategory[];
 }
 
 export function useStoreSettings() {

@@ -59,3 +59,14 @@ export function requireSecret(env: Env, name: keyof Env): string {
   }
   return value;
 }
+
+/**
+ * Read a secret, allowing a deterministic dev fallback when not in production so
+ * local dev works without a `.dev.vars` file. In production the secret is required.
+ */
+export function secretOrDev(env: Env, name: keyof Env): string {
+  const value = env[name];
+  if (typeof value === 'string' && value.length > 0) return value;
+  if (isProduction(env)) return requireSecret(env, name);
+  return `dev-fallback-${String(name)}`;
+}

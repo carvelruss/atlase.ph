@@ -1,0 +1,12 @@
+.sticky {
+  position: sticky;
+  top: calc(var(--at-topbar-height) + 1rem);
+  max-height: calc(100vh - var(--at-topbar-height) - 2rem);
+  overflow-y: auto;
+
+  @media (max-width: 991.98px) {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}

@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import type { Fn } from '../../lib/env';
 import { getDb, schema } from '../../lib/db';
 import { ok } from '../../lib/response';
@@ -14,7 +14,7 @@ interface StoreDoc {
 export const onRequestGet: Fn = async ({ env, data }) => {
   const db = getDb(env);
 
-  const [storeRow, themeRow, menus, menuItems] = await Promise.all([
+  const [storeRow, themeRow, menus, menuItems, categoryRows] = await Promise.all([
     db.select().from(schema.storeSettings).where(eq(schema.storeSettings.group, 'store')).limit(1),
     db.select().from(schema.themeSettings).where(eq(schema.themeSettings.id, 1)).limit(1),
     db.select().from(schema.menus),
@@ -23,6 +23,11 @@ export const onRequestGet: Fn = async ({ env, data }) => {
       .from(schema.menuItems)
       .where(eq(schema.menuItems.isVisible, true))
       .orderBy(asc(schema.menuItems.position)),
+    db
+      .select({ id: schema.categories.id, name: schema.categories.name, slug: schema.categories.slug })
+      .from(schema.categories)
+      .where(and(eq(schema.categories.isActive, true), sql`${schema.categories.parentId} IS NULL`))
+      .orderBy(asc(schema.categories.displayOrder), asc(schema.categories.name)),
   ]);
 
   const store = (storeRow[0]?.data as StoreDoc | undefined) ?? {};
@@ -45,10 +50,8 @@ export const onRequestGet: Fn = async ({ env, data }) => {
       },
       theme,
       menus: menuByHandle,
+      categories: categoryRows,
     },
     { requestId: data.requestId },
-    200,
-    // Public, cacheable at the edge briefly.
-    undefined,
   );
 };

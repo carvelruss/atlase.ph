@@ -12,10 +12,20 @@ import { ResetPasswordPage } from '@/pages/admin/auth/ResetPasswordPage';
 import { PlaceholderPage } from '@/pages/admin/PlaceholderPage';
 import { RequireAdmin, LoginRoute, SetupRoute, RedirectIfAuthed } from './guards';
 
-// Route-based code splitting: the dashboard (with charts) loads as its own chunk.
-const DashboardPage = lazy(() =>
-  import('@/pages/admin/DashboardPage').then((m) => ({ default: m.DashboardPage })),
-);
+// Route-based code splitting.
+const DashboardPage = lazy(() => import('@/pages/admin/DashboardPage').then((m) => ({ default: m.DashboardPage })));
+const ProductsListPage = lazy(() => import('@/pages/admin/products/ProductsListPage').then((m) => ({ default: m.ProductsListPage })));
+const ProductEditorPage = lazy(() => import('@/pages/admin/products/ProductEditorPage').then((m) => ({ default: m.ProductEditorPage })));
+const CategoriesPage = lazy(() => import('@/pages/admin/CategoriesPage').then((m) => ({ default: m.CategoriesPage })));
+const CollectionsPage = lazy(() => import('@/pages/admin/CollectionsPage').then((m) => ({ default: m.CollectionsPage })));
+const InventoryPage = lazy(() => import('@/pages/admin/InventoryPage').then((m) => ({ default: m.InventoryPage })));
+
+const ShopPage = lazy(() => import('@/pages/storefront/ShopPage').then((m) => ({ default: m.ShopPage })));
+const ProductDetailPage = lazy(() => import('@/pages/storefront/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
+const CategoryPage = lazy(() => import('@/pages/storefront/CategoryPage').then((m) => ({ default: m.CategoryPage })));
+const CollectionPage = lazy(() => import('@/pages/storefront/CollectionPage').then((m) => ({ default: m.CollectionPage })));
+const SearchPage = lazy(() => import('@/pages/storefront/SearchPage').then((m) => ({ default: m.SearchPage })));
+const CartPage = lazy(() => import('@/pages/storefront/CartPage').then((m) => ({ default: m.CartPage })));
 
 const ph = (title: string, phase: string, icon?: string) => (
   <PlaceholderPage title={title} phase={phase} icon={icon} />
@@ -28,13 +38,13 @@ const storefrontRoutes: RouteObject = {
   element: <StorefrontLayout />,
   children: [
     { index: true, element: <HomePage /> },
-    { path: 'shop', element: sf('Shop', 'Product browsing is coming with the catalog build.', 'bi-grid') },
-    { path: 'products/:slug', element: sf('Product details', undefined, 'bi-box-seam') },
-    { path: 'categories/:slug', element: sf('Category', undefined, 'bi-tags') },
-    { path: 'collections/:slug', element: sf('Collection', undefined, 'bi-collection') },
-    { path: 'search', element: sf('Search', undefined, 'bi-search') },
-    { path: 'cart', element: sf('Your cart', 'The cart arrives with the commerce build.', 'bi-bag') },
-    { path: 'checkout', element: sf('Checkout', undefined, 'bi-credit-card') },
+    { path: 'shop', element: <ShopPage /> },
+    { path: 'products/:slug', element: <ProductDetailPage /> },
+    { path: 'categories/:slug', element: <CategoryPage /> },
+    { path: 'collections/:slug', element: <CollectionPage /> },
+    { path: 'search', element: <SearchPage /> },
+    { path: 'cart', element: <CartPage /> },
+    { path: 'checkout', element: sf('Checkout', 'Secure checkout arrives with the commerce build.', 'bi-credit-card') },
     { path: 'checkout/success', element: sf('Order confirmed', undefined, 'bi-check-circle') },
     { path: 'track-order', element: sf('Track your order', undefined, 'bi-truck') },
     { path: 'pages/:slug', element: sf('Page', undefined, 'bi-file-text') },
@@ -65,13 +75,13 @@ const adminAppRoutes: RouteObject = {
         { path: 'shipping/methods', element: ph('Delivery methods', 'Phase 3', 'bi-truck') },
         { path: 'shipping/zones', element: ph('Shipping zones', 'Phase 3', 'bi-geo-alt') },
 
-        { path: 'products', element: ph('Products', 'Phase 2', 'bi-box-seam') },
-        { path: 'products/new', element: ph('Add product', 'Phase 2', 'bi-plus-square') },
-        { path: 'products/:productId', element: ph('Edit product', 'Phase 2', 'bi-pencil-square') },
-        { path: 'categories', element: ph('Categories', 'Phase 2', 'bi-tags') },
-        { path: 'collections', element: ph('Collections', 'Phase 2', 'bi-collection') },
-        { path: 'inventory', element: ph('Inventory', 'Phase 2', 'bi-boxes') },
-        { path: 'reviews', element: ph('Reviews', 'Phase 2', 'bi-star') },
+        { path: 'products', element: <ProductsListPage /> },
+        { path: 'products/new', element: <ProductEditorPage /> },
+        { path: 'products/:productId', element: <ProductEditorPage /> },
+        { path: 'categories', element: <CategoriesPage /> },
+        { path: 'collections', element: <CollectionsPage /> },
+        { path: 'inventory', element: <InventoryPage /> },
+        { path: 'reviews', element: ph('Reviews', 'Phase 4', 'bi-star') },
 
         { path: 'customers', element: ph('Customers', 'Phase 3', 'bi-people') },
         { path: 'customers/new', element: ph('Add customer', 'Phase 3', 'bi-person-plus') },

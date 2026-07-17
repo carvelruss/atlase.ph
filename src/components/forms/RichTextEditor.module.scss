@@ -1,0 +1,44 @@
+.wrapper {
+  border: 1px solid var(--at-border);
+  border-radius: var(--at-radius);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: var(--at-surface-muted);
+  border-bottom: 1px solid var(--at-border);
+  flex-wrap: wrap;
+}
+
+.content {
+  padding: 0.75rem;
+  min-height: 160px;
+  background: var(--at-surface);
+
+  :global(.ProseMirror) {
+    outline: none;
+    min-height: 140px;
+
+    > * + * {
+      margin-top: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--at-border-strong);
+      padding-left: 0.75rem;
+      color: var(--at-muted);
+    }
+  }
+}
