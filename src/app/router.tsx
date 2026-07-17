@@ -25,6 +25,21 @@ const OrderDetailPage = lazy(() => import('@/pages/admin/orders/OrderDetailPage'
 const CustomersPage = lazy(() => import('@/pages/admin/CustomersPage').then((m) => ({ default: m.CustomersPage })));
 const CustomerDetailPage = lazy(() => import('@/pages/admin/CustomerDetailPage').then((m) => ({ default: m.CustomerDetailPage })));
 const ShippingMethodsPage = lazy(() => import('@/pages/admin/ShippingMethodsPage').then((m) => ({ default: m.ShippingMethodsPage })));
+const DiscountsPage = lazy(() => import('@/pages/admin/DiscountsPage').then((m) => ({ default: m.DiscountsPage })));
+const LoyaltyPage = lazy(() => import('@/pages/admin/LoyaltyPage').then((m) => ({ default: m.LoyaltyPage })));
+const PagesPage = lazy(() => import('@/pages/admin/content/PagesPage').then((m) => ({ default: m.PagesPage })));
+const PageEditorPage = lazy(() => import('@/pages/admin/content/PageEditorPage').then((m) => ({ default: m.PageEditorPage })));
+const BlogPage = lazy(() => import('@/pages/admin/content/BlogPage').then((m) => ({ default: m.BlogPage })));
+const BlogEditorPage = lazy(() => import('@/pages/admin/content/BlogEditorPage').then((m) => ({ default: m.BlogEditorPage })));
+const MediaLibraryPage = lazy(() => import('@/pages/admin/content/MediaLibraryPage').then((m) => ({ default: m.MediaLibraryPage })));
+const NavigationPage = lazy(() => import('@/pages/admin/content/NavigationPage').then((m) => ({ default: m.NavigationPage })));
+const HomepageEditorPage = lazy(() => import('@/pages/admin/appearance/HomepageEditorPage').then((m) => ({ default: m.HomepageEditorPage })));
+const ThemeEditorPage = lazy(() => import('@/pages/admin/appearance/ThemeEditorPage').then((m) => ({ default: m.ThemeEditorPage })));
+const SettingsPage = lazy(() => import('@/pages/admin/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+
+const StorefrontContentPage = lazy(() => import('@/pages/storefront/StorefrontContentPage').then((m) => ({ default: m.StorefrontContentPage })));
+const BlogListPage = lazy(() => import('@/pages/storefront/BlogListPage').then((m) => ({ default: m.BlogListPage })));
+const BlogPostPage = lazy(() => import('@/pages/storefront/BlogPostPage').then((m) => ({ default: m.BlogPostPage })));
 
 const ShopPage = lazy(() => import('@/pages/storefront/ShopPage').then((m) => ({ default: m.ShopPage })));
 const ProductDetailPage = lazy(() => import('@/pages/storefront/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
@@ -57,9 +72,9 @@ const storefrontRoutes: RouteObject = {
     { path: 'checkout', element: <CheckoutPage /> },
     { path: 'checkout/success', element: <CheckoutSuccessPage /> },
     { path: 'track-order', element: <TrackOrderPage /> },
-    { path: 'pages/:slug', element: sf('Page', undefined, 'bi-file-text') },
-    { path: 'blog', element: sf('Blog', undefined, 'bi-newspaper') },
-    { path: 'blog/:slug', element: sf('Article', undefined, 'bi-newspaper') },
+    { path: 'pages/:slug', element: <StorefrontContentPage /> },
+    { path: 'blog', element: <BlogListPage /> },
+    { path: 'blog/:slug', element: <BlogPostPage /> },
     { path: 'contact', element: sf('Contact us', undefined, 'bi-envelope') },
     { path: 'account', element: <AccountPage /> },
     { path: 'account/*', element: <AccountPage /> },
@@ -97,9 +112,10 @@ const adminAppRoutes: RouteObject = {
         { path: 'customers', element: <CustomersPage /> },
         { path: 'customers/:customerId', element: <CustomerDetailPage /> },
 
-        { path: 'marketing/discounts', element: ph('Discounts', 'Phase 4', 'bi-percent') },
-        { path: 'marketing/campaigns', element: ph('Campaigns', 'Phase 4', 'bi-megaphone') },
-        { path: 'marketing/loyalty', element: ph('Loyalty', 'Phase 4', 'bi-award') },
+        { path: 'marketing/discounts', element: <DiscountsPage /> },
+        { path: 'marketing/discounts/:discountId', element: <DiscountsPage /> },
+        { path: 'marketing/campaigns', element: ph('Campaigns', 'Phase 5', 'bi-megaphone') },
+        { path: 'marketing/loyalty', element: <LoyaltyPage /> },
 
         { path: 'analytics/sales', element: ph('Sales analytics', 'Phase 5', 'bi-graph-up') },
         { path: 'analytics/traffic', element: ph('Traffic analytics', 'Phase 5', 'bi-bar-chart') },
@@ -109,17 +125,21 @@ const adminAppRoutes: RouteObject = {
         { path: 'payments/transactions', element: ph('Transactions', 'Phase 5', 'bi-credit-card') },
         { path: 'payments/refunds', element: ph('Refunds', 'Phase 5', 'bi-arrow-counterclockwise') },
 
-        { path: 'content/pages', element: ph('Pages', 'Phase 4', 'bi-file-earmark-text') },
-        { path: 'content/blog', element: ph('Blog', 'Phase 4', 'bi-newspaper') },
-        { path: 'content/media', element: ph('Media library', 'Phase 4', 'bi-images') },
-        { path: 'content/navigation', element: ph('Navigation', 'Phase 4', 'bi-diagram-3') },
+        { path: 'content/pages', element: <PagesPage /> },
+        { path: 'content/pages/new', element: <PageEditorPage /> },
+        { path: 'content/pages/:pageId', element: <PageEditorPage /> },
+        { path: 'content/blog', element: <BlogPage /> },
+        { path: 'content/blog/new', element: <BlogEditorPage /> },
+        { path: 'content/blog/:postId', element: <BlogEditorPage /> },
+        { path: 'content/media', element: <MediaLibraryPage /> },
+        { path: 'content/navigation', element: <NavigationPage /> },
 
-        { path: 'appearance/theme', element: ph('Theme editor', 'Phase 4', 'bi-palette') },
-        { path: 'appearance/homepage', element: ph('Homepage sections', 'Phase 4', 'bi-layout-text-window') },
+        { path: 'appearance/theme', element: <ThemeEditorPage /> },
+        { path: 'appearance/homepage', element: <HomepageEditorPage /> },
 
         { path: 'integrations', element: ph('Integrations', 'Phase 5', 'bi-plug') },
-        { path: 'settings', element: ph('Settings', 'Phase 3', 'bi-gear') },
-        { path: 'settings/*', element: ph('Settings', 'Phase 3', 'bi-gear') },
+        { path: 'settings', element: <SettingsPage /> },
+        { path: 'settings/*', element: <SettingsPage /> },
 
         { path: '*', element: ph('Not found', 'this section', 'bi-question-circle') },
       ],
