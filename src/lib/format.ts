@@ -13,6 +13,11 @@ export function formatNumber(value: number): string {
   return new Intl.NumberFormat(LOCALE).format(value);
 }
 
+/** Minor units -> plain major-unit string for number inputs, e.g. 97800 -> "978.00". */
+export function toMajorInput(minorUnits: number): string {
+  return (minorUnits / 100).toFixed(2);
+}
+
 export function formatPercent(value: number, fractionDigits = 1): string {
   return `${value.toFixed(fractionDigits)}%`;
 }

@@ -20,12 +20,22 @@ const CategoriesPage = lazy(() => import('@/pages/admin/CategoriesPage').then((m
 const CollectionsPage = lazy(() => import('@/pages/admin/CollectionsPage').then((m) => ({ default: m.CollectionsPage })));
 const InventoryPage = lazy(() => import('@/pages/admin/InventoryPage').then((m) => ({ default: m.InventoryPage })));
 
+const OrdersListPage = lazy(() => import('@/pages/admin/orders/OrdersListPage').then((m) => ({ default: m.OrdersListPage })));
+const OrderDetailPage = lazy(() => import('@/pages/admin/orders/OrderDetailPage').then((m) => ({ default: m.OrderDetailPage })));
+const CustomersPage = lazy(() => import('@/pages/admin/CustomersPage').then((m) => ({ default: m.CustomersPage })));
+const CustomerDetailPage = lazy(() => import('@/pages/admin/CustomerDetailPage').then((m) => ({ default: m.CustomerDetailPage })));
+const ShippingMethodsPage = lazy(() => import('@/pages/admin/ShippingMethodsPage').then((m) => ({ default: m.ShippingMethodsPage })));
+
 const ShopPage = lazy(() => import('@/pages/storefront/ShopPage').then((m) => ({ default: m.ShopPage })));
 const ProductDetailPage = lazy(() => import('@/pages/storefront/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
 const CategoryPage = lazy(() => import('@/pages/storefront/CategoryPage').then((m) => ({ default: m.CategoryPage })));
 const CollectionPage = lazy(() => import('@/pages/storefront/CollectionPage').then((m) => ({ default: m.CollectionPage })));
 const SearchPage = lazy(() => import('@/pages/storefront/SearchPage').then((m) => ({ default: m.SearchPage })));
 const CartPage = lazy(() => import('@/pages/storefront/CartPage').then((m) => ({ default: m.CartPage })));
+const CheckoutPage = lazy(() => import('@/pages/storefront/CheckoutPage').then((m) => ({ default: m.CheckoutPage })));
+const CheckoutSuccessPage = lazy(() => import('@/pages/storefront/CheckoutSuccessPage').then((m) => ({ default: m.CheckoutSuccessPage })));
+const TrackOrderPage = lazy(() => import('@/pages/storefront/TrackOrderPage').then((m) => ({ default: m.TrackOrderPage })));
+const AccountPage = lazy(() => import('@/pages/account/AccountPage').then((m) => ({ default: m.AccountPage })));
 
 const ph = (title: string, phase: string, icon?: string) => (
   <PlaceholderPage title={title} phase={phase} icon={icon} />
@@ -44,14 +54,15 @@ const storefrontRoutes: RouteObject = {
     { path: 'collections/:slug', element: <CollectionPage /> },
     { path: 'search', element: <SearchPage /> },
     { path: 'cart', element: <CartPage /> },
-    { path: 'checkout', element: sf('Checkout', 'Secure checkout arrives with the commerce build.', 'bi-credit-card') },
-    { path: 'checkout/success', element: sf('Order confirmed', undefined, 'bi-check-circle') },
-    { path: 'track-order', element: sf('Track your order', undefined, 'bi-truck') },
+    { path: 'checkout', element: <CheckoutPage /> },
+    { path: 'checkout/success', element: <CheckoutSuccessPage /> },
+    { path: 'track-order', element: <TrackOrderPage /> },
     { path: 'pages/:slug', element: sf('Page', undefined, 'bi-file-text') },
     { path: 'blog', element: sf('Blog', undefined, 'bi-newspaper') },
     { path: 'blog/:slug', element: sf('Article', undefined, 'bi-newspaper') },
     { path: 'contact', element: sf('Contact us', undefined, 'bi-envelope') },
-    { path: 'account/*', element: sf('Your account', 'Customer accounts arrive with the commerce build.', 'bi-person') },
+    { path: 'account', element: <AccountPage /> },
+    { path: 'account/*', element: <AccountPage /> },
     { path: '*', element: <NotFoundPage /> },
   ],
 };
@@ -65,15 +76,15 @@ const adminAppRoutes: RouteObject = {
       children: [
         { index: true, element: <DashboardPage /> },
 
-        { path: 'orders', element: ph('Orders', 'Phase 3', 'bi-bag') },
-        { path: 'orders/new', element: ph('Create order', 'Phase 3', 'bi-bag-plus') },
-        { path: 'orders/abandoned', element: ph('Abandoned checkouts', 'Phase 3', 'bi-cart-x') },
-        { path: 'orders/returns', element: ph('Returns', 'Phase 3', 'bi-arrow-return-left') },
-        { path: 'orders/:orderId', element: ph('Order details', 'Phase 3', 'bi-receipt') },
+        { path: 'orders', element: <OrdersListPage /> },
+        { path: 'orders/new', element: ph('Create order', 'Phase 4', 'bi-bag-plus') },
+        { path: 'orders/abandoned', element: ph('Abandoned checkouts', 'Phase 4', 'bi-cart-x') },
+        { path: 'orders/returns', element: ph('Returns', 'Phase 4', 'bi-arrow-return-left') },
+        { path: 'orders/:orderId', element: <OrderDetailPage /> },
 
-        { path: 'shipping/shipments', element: ph('Shipments', 'Phase 3', 'bi-truck') },
-        { path: 'shipping/methods', element: ph('Delivery methods', 'Phase 3', 'bi-truck') },
-        { path: 'shipping/zones', element: ph('Shipping zones', 'Phase 3', 'bi-geo-alt') },
+        { path: 'shipping/shipments', element: ph('Shipments', 'Phase 4', 'bi-truck') },
+        { path: 'shipping/methods', element: <ShippingMethodsPage /> },
+        { path: 'shipping/zones', element: ph('Shipping zones', 'Phase 4', 'bi-geo-alt') },
 
         { path: 'products', element: <ProductsListPage /> },
         { path: 'products/new', element: <ProductEditorPage /> },
@@ -83,9 +94,8 @@ const adminAppRoutes: RouteObject = {
         { path: 'inventory', element: <InventoryPage /> },
         { path: 'reviews', element: ph('Reviews', 'Phase 4', 'bi-star') },
 
-        { path: 'customers', element: ph('Customers', 'Phase 3', 'bi-people') },
-        { path: 'customers/new', element: ph('Add customer', 'Phase 3', 'bi-person-plus') },
-        { path: 'customers/:customerId', element: ph('Customer profile', 'Phase 3', 'bi-person') },
+        { path: 'customers', element: <CustomersPage /> },
+        { path: 'customers/:customerId', element: <CustomerDetailPage /> },
 
         { path: 'marketing/discounts', element: ph('Discounts', 'Phase 4', 'bi-percent') },
         { path: 'marketing/campaigns', element: ph('Campaigns', 'Phase 4', 'bi-megaphone') },
@@ -96,8 +106,8 @@ const adminAppRoutes: RouteObject = {
         { path: 'analytics/products', element: ph('Product analytics', 'Phase 5', 'bi-box') },
         { path: 'analytics/customers', element: ph('Customer analytics', 'Phase 5', 'bi-people') },
 
-        { path: 'payments/transactions', element: ph('Transactions', 'Phase 3', 'bi-credit-card') },
-        { path: 'payments/refunds', element: ph('Refunds', 'Phase 3', 'bi-arrow-counterclockwise') },
+        { path: 'payments/transactions', element: ph('Transactions', 'Phase 5', 'bi-credit-card') },
+        { path: 'payments/refunds', element: ph('Refunds', 'Phase 5', 'bi-arrow-counterclockwise') },
 
         { path: 'content/pages', element: ph('Pages', 'Phase 4', 'bi-file-earmark-text') },
         { path: 'content/blog', element: ph('Blog', 'Phase 4', 'bi-newspaper') },

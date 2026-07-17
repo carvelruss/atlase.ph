@@ -57,7 +57,8 @@ const settings: Record<string, unknown> = {
   },
   social: { facebook: '', instagram: '', tiktok: '' },
   warehouse: { name: 'Main Warehouse', address: '123 Ayala Ave, Makati City', country: 'PH' },
-  order_numbering: { prefix: 'ATL-', nextNumber: 1001, padding: 4 },
+  // Starts at 1002 because the seed below creates order ATL-1001.
+  order_numbering: { prefix: 'ATL-', nextNumber: 1002, padding: 4 },
 };
 for (const [group, data] of Object.entries(settings)) {
   add(`INSERT OR IGNORE INTO store_settings ("group", data) VALUES (${s(group)}, ${j(data)});`);

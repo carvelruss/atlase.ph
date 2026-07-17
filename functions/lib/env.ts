@@ -39,6 +39,7 @@ export interface Env {
 export interface RequestData extends Record<string, unknown> {
   requestId: string;
   admin?: { id: number; email: string; name: string; sessionId: string };
+  customer?: { id: number; email: string; sessionId: string };
 }
 
 /** Convenience alias for typed Pages Functions in this project. */
