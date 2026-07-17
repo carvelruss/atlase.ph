@@ -1,0 +1,4 @@
+# SPA fallback for Cloudflare Pages.
+# Pages Functions (/api/*) and existing static assets are matched BEFORE this rule,
+# so client-side routes resolve to the app shell without shadowing the API.
+/*    /index.html   200

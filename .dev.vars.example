@@ -1,0 +1,32 @@
+# Local development secrets for `wrangler pages dev`.
+# Copy to `.dev.vars` and fill in real values. NEVER commit `.dev.vars`.
+# In production, set these with `wrangler pages secret put <NAME>` or the dashboard.
+
+# --- Core security (required) ---
+# 32+ char random strings. Generate: openssl rand -hex 32
+SESSION_SECRET="dev-session-secret-change-me-0000000000000000000000000000000000"
+CSRF_SECRET="dev-csrf-secret-change-me-00000000000000000000000000000000000000"
+# Signs guest cart / checkout-recovery tokens.
+CART_TOKEN_SECRET="dev-cart-secret-change-me-00000000000000000000000000000000000000"
+
+# --- Transactional email (optional; dev falls back to console logging) ---
+EMAIL_PROVIDER="console"            # console | resend | postmark | sendgrid
+EMAIL_API_KEY=""
+EMAIL_FROM="Atlase <no-reply@atlase.ph>"
+
+# --- Payments (optional; COD + manual bank transfer work without these) ---
+PAYMENT_PROVIDER="manual"           # manual | paymongo | stripe | paypal | maya
+PAYMONGO_SECRET_KEY=""
+PAYMONGO_WEBHOOK_SECRET=""
+STRIPE_SECRET_KEY=""
+STRIPE_WEBHOOK_SECRET=""
+
+# --- Couriers (optional; manual shipping works without these) ---
+SHIPPO_API_KEY=""
+JT_API_KEY=""
+NINJAVAN_CLIENT_ID=""
+NINJAVAN_CLIENT_SECRET=""
+
+# --- Misc ---
+# Base URL used for links in emails and recovery tokens.
+PUBLIC_BASE_URL="http://localhost:8788"

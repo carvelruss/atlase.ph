@@ -1,0 +1,142 @@
+// =============================================================================
+// Atlase design tokens — "Indigo & Amber"
+// Single source of truth for the design system. Consumed by global SCSS and by
+// component CSS Modules via var(--at-*). Light mode is authoritative; the
+// [data-theme='dark'] block is scaffolded so dark mode can be enabled later.
+// =============================================================================
+
+:root {
+  // --- Brand palette -----------------------------------------------------------
+  --at-primary: #4f46e5; // indigo-600
+  --at-primary-hover: #4338ca; // indigo-700
+  --at-primary-active: #3730a3; // indigo-800
+  --at-primary-soft: #eef2ff; // indigo-50 (tints, badges)
+  --at-primary-contrast: #ffffff;
+
+  --at-secondary: #64748b; // slate-500
+  --at-secondary-hover: #475569;
+
+  --at-accent: #f59e0b; // amber-500
+  --at-accent-hover: #d97706;
+  --at-accent-soft: #fffbeb;
+  --at-accent-contrast: #0f172a;
+
+  // --- Status ------------------------------------------------------------------
+  --at-success: #16a34a;
+  --at-success-soft: #dcfce7;
+  --at-warning: #f59e0b;
+  --at-warning-soft: #fef3c7;
+  --at-danger: #dc2626;
+  --at-danger-soft: #fee2e2;
+  --at-info: #0ea5e9;
+  --at-info-soft: #e0f2fe;
+
+  // --- Surfaces & structure ----------------------------------------------------
+  --at-bg: #f8fafc; // app background (slate-50)
+  --at-surface: #ffffff; // cards, panels
+  --at-surface-muted: #f1f5f9; // subtle fills (slate-100)
+  --at-surface-hover: #f8fafc;
+  --at-border: #e2e8f0; // slate-200
+  --at-border-strong: #cbd5e1; // slate-300
+
+  // --- Typography colors -------------------------------------------------------
+  --at-heading: #0f172a; // slate-900
+  --at-text: #334155; // slate-700
+  --at-muted: #64748b; // slate-500
+  --at-text-inverse: #f8fafc;
+
+  // --- Sidebar (admin) ---------------------------------------------------------
+  --at-sidebar-bg: #0f172a; // slate-900
+  --at-sidebar-text: #cbd5e1; // slate-300
+  --at-sidebar-muted: #64748b;
+  --at-sidebar-heading: #94a3b8;
+  --at-sidebar-hover: #1e293b; // slate-800
+  --at-sidebar-active-bg: #4f46e5;
+  --at-sidebar-active-text: #ffffff;
+  --at-sidebar-border: #1e293b;
+
+  // --- Focus / interaction -----------------------------------------------------
+  --at-focus-ring: rgba(79, 70, 229, 0.35);
+  --at-focus-ring-width: 3px;
+
+  // --- Typography scale --------------------------------------------------------
+  --at-font-sans:
+    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --at-font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, 'Cascadia Code', monospace;
+  --at-fs-xs: 0.75rem;
+  --at-fs-sm: 0.8125rem;
+  --at-fs-base: 0.875rem; // admin base is compact-but-readable
+  --at-fs-md: 1rem;
+  --at-fs-lg: 1.125rem;
+  --at-fs-xl: 1.375rem;
+  --at-fs-2xl: 1.75rem;
+  --at-fs-3xl: 2.25rem;
+  --at-fw-normal: 400;
+  --at-fw-medium: 500;
+  --at-fw-semibold: 600;
+  --at-fw-bold: 700;
+  --at-lh-tight: 1.25;
+  --at-lh-base: 1.55;
+
+  // --- Radius ------------------------------------------------------------------
+  --at-radius-sm: 6px;
+  --at-radius: 10px;
+  --at-radius-lg: 14px;
+  --at-radius-xl: 20px;
+  --at-radius-pill: 999px;
+
+  // --- Elevation ---------------------------------------------------------------
+  --at-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --at-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --at-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --at-shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.12);
+  --at-shadow-focus: 0 0 0 var(--at-focus-ring-width) var(--at-focus-ring);
+
+  // --- Spacing (4px base) ------------------------------------------------------
+  --at-space-1: 0.25rem;
+  --at-space-2: 0.5rem;
+  --at-space-3: 0.75rem;
+  --at-space-4: 1rem;
+  --at-space-5: 1.5rem;
+  --at-space-6: 2rem;
+  --at-space-8: 3rem;
+
+  // --- Layout ------------------------------------------------------------------
+  --at-sidebar-width: 256px;
+  --at-sidebar-width-collapsed: 72px;
+  --at-topbar-height: 60px;
+  --at-container-max: 1280px;
+
+  // --- Motion ------------------------------------------------------------------
+  --at-transition-fast: 120ms ease;
+  --at-transition: 180ms ease;
+  --at-transition-slow: 280ms ease;
+
+  --at-z-dropdown: 1000;
+  --at-z-sticky: 1020;
+  --at-z-drawer: 1040;
+  --at-z-modal: 1050;
+  --at-z-toast: 1080;
+}
+
+// Dark mode scaffold — not enabled yet, values approximate and refined in Phase 6.
+[data-theme='dark'] {
+  --at-bg: #0b1120;
+  --at-surface: #0f172a;
+  --at-surface-muted: #1e293b;
+  --at-surface-hover: #1e293b;
+  --at-border: #1e293b;
+  --at-border-strong: #334155;
+  --at-heading: #f1f5f9;
+  --at-text: #cbd5e1;
+  --at-muted: #94a3b8;
+  --at-primary-soft: #1e1b4b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --at-transition-fast: 0ms;
+    --at-transition: 0ms;
+    --at-transition-slow: 0ms;
+  }
+}

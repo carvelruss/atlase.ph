@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Atlase">
+  <rect width="32" height="32" rx="7" fill="#4f46e5" />
+  <path d="M16 6 L25 25 H20.4 L18.9 21.4 H13.1 L11.6 25 H7 L16 6 Z M16 12.6 L14.3 17.4 H17.7 L16 12.6 Z"
+        fill="#ffffff" />
+  <circle cx="24.5" cy="8" r="2.4" fill="#f59e0b" />
+</svg>

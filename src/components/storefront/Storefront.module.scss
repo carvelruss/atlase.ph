@@ -1,0 +1,126 @@
+.announcement {
+  background: var(--at-heading);
+  color: #fff;
+  padding: 0.5rem 0;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--at-z-sticky);
+  background: var(--at-surface);
+  border-bottom: 1px solid var(--at-border);
+  padding: 0.75rem 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--at-fw-bold);
+  font-size: 1.15rem;
+  color: var(--at-heading);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.desktopNav {
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: 2rem;
+}
+
+.navLink,
+.navLinkActive {
+  color: var(--at-text);
+  text-decoration: none;
+  font-weight: var(--at-fw-medium);
+
+  &:hover {
+    color: var(--at-primary);
+  }
+}
+
+.navLinkActive {
+  color: var(--at-primary);
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--at-heading);
+  font-size: 1.15rem;
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+
+  &:hover {
+    background: var(--at-surface-muted);
+    color: var(--at-primary);
+  }
+}
+
+.cartBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--at-radius-pill);
+  background: var(--at-primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: var(--at-fw-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileNav {
+  border-top: 1px solid var(--at-border);
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.mobileNavLink {
+  display: block;
+  padding: 0.65rem 1rem;
+  color: var(--at-text);
+  text-decoration: none;
+  border-radius: var(--at-radius);
+
+  &:hover {
+    background: var(--at-surface-muted);
+  }
+}
+
+// --- Footer ---
+.footer {
+  background: var(--at-heading);
+  color: #cbd5e1;
+  padding: 3rem 0 1.5rem;
+  margin-top: 4rem;
+}
+
+.footerLink {
+  color: #cbd5e1;
+  text-decoration: none;
+  display: block;
+  padding: 0.2rem 0;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+// --- Hero (home) ---
+.hero {
+  background: linear-gradient(135deg, var(--at-primary-soft), #ffffff 70%);
+  border-radius: var(--at-radius-xl);
+  padding: clamp(2rem, 6vw, 4.5rem);
+}

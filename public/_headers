@@ -1,0 +1,20 @@
+# Security + caching headers for statically served assets (production build).
+# API/function responses set their own headers in functions/_middleware.ts.
+# These rules are not applied by `wrangler pages dev` in Vite-proxy mode, so local
+# HMR is unaffected.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; img-src 'self' data: blob: https:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; media-src 'self' https:; upgrade-insecure-requests
+
+# Hashed, immutable build assets.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Never cache the app shell so deploys take effect immediately.
+/index.html
+  Cache-Control: no-cache
