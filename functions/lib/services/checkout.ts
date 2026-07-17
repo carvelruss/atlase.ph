@@ -17,6 +17,7 @@ import {
 } from '../../../shared/db/schema/index';
 import { getDb, type Database } from '../db';
 import { badRequest, conflict, notFound } from '../errors';
+import { computeDiscountAmount, computeTax, computeGrandTotal } from '../../../shared/utils/pricing';
 import { getSettingsGroup, nextOrderNumber } from '../settings';
 import { resolveShippingOption } from './shipping';
 import type { AddressInput } from '../validators';
@@ -121,21 +122,10 @@ export async function validateDiscount(
   if (d.minQuantity != null && itemCount < d.minQuantity) throw badRequest('Add more items to use this discount.');
   if (d.usageLimit != null && d.usageCount >= d.usageLimit) throw badRequest('This discount has reached its usage limit.');
 
-  let amount = 0;
-  let freeShipping = false;
-  switch (d.type) {
-    case 'percentage':
-      amount = Math.min(subtotal, Math.round((subtotal * d.value) / 100));
-      break;
-    case 'fixed_amount':
-      amount = Math.min(subtotal, d.value);
-      break;
-    case 'free_shipping':
-      freeShipping = true;
-      break;
-    default:
-      throw badRequest('This discount cannot be applied at checkout.');
+  if (!['percentage', 'fixed_amount', 'free_shipping'].includes(d.type)) {
+    throw badRequest('This discount cannot be applied at checkout.');
   }
+  const { amount, freeShipping } = computeDiscountAmount(d.type as 'percentage' | 'fixed_amount' | 'free_shipping', d.value, subtotal);
 
   return { discountId: d.id, code: normalized, amount, freeShipping };
 }
@@ -177,23 +167,15 @@ export async function calculateTotals(
   const tax = await getSettingsGroup<TaxSettings>(env, 'tax');
   const charges = await getSettingsGroup<ChargeSettings>(env, 'charges');
 
-  const taxable = Math.max(0, subtotal - discountTotal);
-  let taxTotal = 0;
-  if (tax.enabled) {
-    const rate = tax.defaultRate ?? 0;
-    if (tax.pricesIncludeTax) {
-      // VAT already inside prices — report the embedded portion, don't add it.
-      taxTotal = Math.round(taxable - taxable / (1 + rate / 100));
-    } else {
-      taxTotal = Math.round((taxable * rate) / 100);
-    }
-  }
+  const taxableBase = Math.max(0, subtotal - discountTotal);
+  const { taxTotal, addedTax } = tax.enabled
+    ? computeTax(taxableBase, tax.defaultRate ?? 0, tax.pricesIncludeTax ?? false)
+    : { taxTotal: 0, addedTax: 0 };
 
   let extraChargesTotal = charges.handlingFee ?? 0;
   if (input.paymentMethod === 'cod' && charges.codFee) extraChargesTotal += charges.codFee;
 
-  const addedTax = tax.enabled && !tax.pricesIncludeTax ? taxTotal : 0;
-  const grandTotal = Math.max(0, subtotal - discountTotal + shippingTotal + addedTax + extraChargesTotal);
+  const grandTotal = computeGrandTotal({ subtotal, discountTotal, shippingTotal, addedTax, extraChargesTotal });
 
   return { subtotal, discountTotal, shippingTotal, taxTotal, extraChargesTotal, grandTotal };
 }

@@ -4,6 +4,7 @@ import { apiFetch } from '@/lib/api';
 import { Spinner } from '@/components/feedback/Spinner';
 import { NotFoundPage } from './NotFoundPage';
 import { formatDate } from '@/lib/format';
+import { useSeo } from '@/hooks/useSeo';
 
 interface Post {
   title: string;
@@ -19,6 +20,8 @@ interface Post {
 export function BlogPostPage() {
   const { slug } = useParams();
   const { data, isLoading, isError } = useQuery({ queryKey: ['sf-post', slug], queryFn: () => apiFetch<Post>(`/api/storefront/blog/${slug}`), enabled: !!slug, retry: false });
+
+  useSeo({ title: data?.title, description: data?.overview || undefined });
 
   if (isLoading) return <Spinner center />;
   if (isError || !data) return <NotFoundPage />;

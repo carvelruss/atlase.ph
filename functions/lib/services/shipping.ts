@@ -1,6 +1,7 @@
 import { asc, eq, or } from 'drizzle-orm';
 import { shippingMethods, shippingRates, shippingZones } from '../../../shared/db/schema/index';
 import { getDb } from '../db';
+import { pickShippingTierRate } from '../../../shared/utils/pricing';
 import type { Env } from '../env';
 
 export interface ShippingDestination {
@@ -74,9 +75,9 @@ export async function getShippingOptions(env: Env, ctx: ShippingContext): Promis
     } else if (m.type === 'weight_based' || m.type === 'price_based') {
       const tiers = await db.select().from(shippingRates).where(eq(shippingRates.methodId, m.id)).orderBy(asc(shippingRates.minValue));
       const value = m.type === 'weight_based' ? ctx.weightGrams : ctx.subtotal;
-      const tier = tiers.find((t) => value >= t.minValue && (t.maxValue == null || value <= t.maxValue));
-      if (!tier) continue; // no applicable tier
-      rate = tier.rate;
+      const tierRate = pickShippingTierRate(tiers, value);
+      if (tierRate == null) continue; // no applicable tier
+      rate = tierRate;
     }
 
     options.push({ id: m.id, name: m.name, description: m.description, rate, estimatedDays: m.estimatedDays, type: m.type });

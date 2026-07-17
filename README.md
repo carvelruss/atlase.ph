@@ -4,10 +4,10 @@ A production-oriented, **single-owner e-commerce platform** built for Cloudflare
 One store, one administrator — a public storefront and a private admin dashboard, connected
 end-to-end through Cloudflare Pages Functions, D1 (SQL), R2 (media), and KV (sessions/cache).
 
-> **Build status:** Phase 1 (Foundation) is complete and verified — project scaffold, design
-> system, full D1 schema + migrations + seed, admin authentication, security middleware, and
-> the admin + storefront application shells. Phases 2–6 (catalog, commerce, marketing/content,
-> operations, hardening) build on this foundation. See [Roadmap](#roadmap).
+> **Build status: all six phases complete and verified.** Foundation, catalog, commerce,
+> marketing/content, operations, and hardening are built and connected end-to-end. Each phase
+> was verified with typecheck + lint + build + a live smoke test against the running stack, and
+> the code is pushed to GitHub. See [Roadmap](#roadmap) and [Known limitations](#known-limitations).
 
 ---
 
@@ -30,6 +30,7 @@ end-to-end through Cloudflare Pages Functions, D1 (SQL), R2 (media), and KV (ses
 - [Backup & restore](#backup--restore)
 - [Troubleshooting](#troubleshooting)
 - [Roadmap](#roadmap)
+- [Known limitations](#known-limitations)
 
 ---
 
@@ -245,11 +246,43 @@ instructions. Cloudflare provisions HTTPS automatically. Set the canonical domai
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Foundation: scaffold, design system, schema, auth, shells | ✅ Complete & verified |
-| 2 | Catalog: products, variants, categories, collections, inventory, media, public catalog | ⏳ Next |
-| 3 | Commerce: cart, checkout, customers, orders, shipping, COD/manual payments | Planned |
-| 4 | Marketing & content: discounts, loyalty, blog, pages, media library, homepage editor | Planned |
-| 5 | Operations: analytics, notifications, integrations, provider adapters, audit logs | Planned |
-| 6 | Hardening: security, a11y, performance, tests, deployment | Planned |
+| 2 | Catalog: products, variants, categories, collections, inventory, media, public catalog | ✅ Complete & verified |
+| 3 | Commerce: cart, checkout, customers, orders, shipping, COD/manual payments | ✅ Complete & verified |
+| 4 | Marketing & content: discounts, loyalty, blog, pages, media library, homepage editor | ✅ Complete & verified |
+| 5 | Operations: analytics, notifications, integrations, provider adapters, audit logs | ✅ Complete & verified |
+| 6 | Hardening: security, a11y, performance, tests, deployment | ✅ Complete & verified |
+
+## Known limitations
+
+Honest notes on what is intentionally deferred or partial:
+
+- **SEO structured data / social scraping**: per-route `<title>`/meta/robots are managed
+  client-side (works for JS-rendering crawlers like Google), and `robots.txt` + a dynamic
+  `sitemap.xml` are served. Full JSON-LD and Open Graph for non-JS social scrapers need
+  server-side rendering/prerendering, which this SPA does not do yet.
+- **Payment gateways**: COD and manual bank transfer are fully functional. PayMongo/Stripe are
+  wired as a provider abstraction with **signature-verified, idempotent webhooks**, but need real
+  credentials + a hosted-checkout front end to transact. PayPal/Maya are interface placeholders.
+- **Courier automation**: manual shipping (admin enters courier + tracking) is complete. Shippo/
+  J&T/Ninja Van/LBC/GrabExpress/Lalamove are adapter stubs behind a common interface.
+- **Email**: Resend is implemented behind the provider interface; Postmark/SendGrid share the
+  contract but are not wired. Without a key, email logs to the console and to `notification_logs`.
+- **Loyalty** is a working foundation (accounts, balances, manual adjustments); earning/redemption
+  rules and a storefront widget are extension points.
+- **CSV import/export**, **abandoned-checkout recovery emails**, **rule-based collection UI depth**,
+  **returns workflow**, and **campaigns** are scoped as future work.
+- **Playwright E2E** specs are written for the headline flows but require `npx playwright install`
+  and a seeded local stack; the unit + component suites (34 tests) run in CI without a browser.
+
+## Recommended next improvements
+
+1. Add SSR/prerendering (or a Cloudflare Function that injects per-product JSON-LD + OG tags) for
+   full SEO and social sharing.
+2. Wire a real payment gateway (PayMongo hosted checkout is the natural first for PH) end-to-end,
+   including the confirmation webhook already scaffolded.
+3. CSV product import/export and abandoned-checkout recovery emails.
+4. Migrate the heavier admin tables to TanStack Table for column sorting/resizing/virtualization.
+5. Add a scheduled Worker (cron) to mark stale checkouts abandoned and dispatch recovery emails.
 
 Additional docs: [ARCHITECTURE.md](./ARCHITECTURE.md) · [DATABASE.md](./DATABASE.md) ·
 [DEPLOYMENT.md](./DEPLOYMENT.md) · [SECURITY.md](./SECURITY.md) · [API.md](./API.md).

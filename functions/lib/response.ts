@@ -11,6 +11,8 @@ export function baseSecurityHeaders(): Record<string, string> {
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Cross-Origin-Opener-Policy': 'same-origin',
+    // Ignored by browsers over plain HTTP (local dev); enforced in production.
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   };
 }
 
@@ -37,6 +39,14 @@ export function ok<T>(
 
 export function created<T>(data: T, meta: ApiMeta = {}): Response {
   return ok(data, meta, 201);
+}
+
+/**
+ * Public, edge-cacheable JSON response for anonymous storefront content. Correctness
+ * is still guaranteed server-side at cart/checkout, so brief staleness is safe.
+ */
+export function okPublic<T>(data: T, meta: ApiMeta = {}): Response {
+  return ok(data, meta, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=300' });
 }
 
 export function noContent(): Response {

@@ -1,7 +1,7 @@
 import { and, asc, eq, sql } from 'drizzle-orm';
 import type { Fn } from '../../lib/env';
 import { getDb, schema } from '../../lib/db';
-import { ok } from '../../lib/response';
+import { okPublic } from '../../lib/response';
 import { listPublicProducts } from '../../lib/services/storefront';
 
 /** Resolved homepage: enabled sections (published settings) + featured data to render them. */
@@ -28,7 +28,7 @@ export const onRequestGet: Fn = async ({ env, data }) => {
     listPublicProducts(env, { featuredOnly: true, sort: 'featured', offset: 0, pageSize: 8 }),
   ]);
 
-  return ok(
+  return okPublic(
     { sections, featuredCategories: categories, featuredProducts: featured.items },
     { requestId: data.requestId },
   );

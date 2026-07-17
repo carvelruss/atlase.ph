@@ -3,10 +3,12 @@ import { useCart, useUpdateCartItem, useRemoveCartItem } from '@/features/cart/a
 import { Spinner } from '@/components/feedback/Spinner';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { money } from '@/lib/format';
+import { useSeo } from '@/hooks/useSeo';
 
 export function CartPage() {
   const navigate = useNavigate();
   const { data: cart, isLoading } = useCart();
+  useSeo({ title: 'Your cart', noindex: true });
   const updateItem = useUpdateCartItem();
   const removeItem = useRemoveCartItem();
 

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useStorefrontProduct } from '@/features/storefront/catalogApi';
 import { track } from '@/features/storefront/tracker';
+import { useSeo } from '@/hooks/useSeo';
 import { useAddToCart } from '@/features/cart/api';
 import { useToast } from '@/components/feedback/Toast';
 import { ProductGrid } from '@/components/storefront/ProductGrid';
@@ -25,6 +26,11 @@ export function ProductDetailPage() {
   useEffect(() => {
     if (product) track('product_view', { productId: product.id });
   }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useSeo({
+    title: product?.seoTitle || product?.name,
+    description: product?.seoDescription || product?.shortDescription || undefined,
+  });
 
   const selectedVariant = useMemo(() => {
     if (!product) return null;

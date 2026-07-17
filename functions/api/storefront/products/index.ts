@@ -1,6 +1,6 @@
 import type { Fn } from '../../../lib/env';
 import { parsePageParams } from '../../../lib/pagination';
-import { ok, paginationMeta } from '../../../lib/response';
+import { okPublic, paginationMeta } from '../../../lib/response';
 import { listPublicProducts } from '../../../lib/services/storefront';
 
 export const onRequestGet: Fn = async ({ request, env, data }) => {
@@ -21,5 +21,5 @@ export const onRequestGet: Fn = async ({ request, env, data }) => {
     pageSize: pp.pageSize,
   });
 
-  return ok({ items }, { requestId: data.requestId, ...paginationMeta(pp.page, pp.pageSize, total) });
+  return okPublic({ items }, { requestId: data.requestId, ...paginationMeta(pp.page, pp.pageSize, total) });
 };

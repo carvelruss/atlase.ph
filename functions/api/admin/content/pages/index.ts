@@ -5,13 +5,14 @@ import { parseJsonBody } from '../../../../lib/validation';
 import { ok, created } from '../../../../lib/response';
 import { ensureUniqueSlug } from '../../../../lib/slugs';
 import { pageSchema, type PageInput } from '../../../../lib/validators';
+import { sanitizeHtml } from '../../../../../shared/utils/sanitize';
 import { writeAudit } from '../../../../lib/audit';
 
 export function pageValues(input: PageInput, slug: string) {
   return {
     title: input.title,
     slug,
-    content: input.content ?? null,
+    content: input.content ? sanitizeHtml(input.content) : null,
     template: input.template,
     status: input.status,
     seoTitle: input.seoTitle ?? null,

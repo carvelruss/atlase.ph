@@ -1,7 +1,7 @@
 import type { Fn } from '../../../lib/env';
 import { getDb } from '../../../lib/db';
 import { parsePageParams } from '../../../lib/pagination';
-import { ok, paginationMeta } from '../../../lib/response';
+import { okPublic, paginationMeta } from '../../../lib/response';
 import { notFound } from '../../../lib/errors';
 import { collectionCondition, listPublicProducts } from '../../../lib/services/storefront';
 
@@ -20,7 +20,7 @@ export const onRequestGet: Fn = async ({ request, params, env, data }) => {
   });
 
   const c = resolved.collection;
-  return ok(
+  return okPublic(
     { collection: { name: c.name, slug: c.slug, description: c.description, seoTitle: c.seoTitle, seoDescription: c.seoDescription }, items },
     { requestId: data.requestId, ...paginationMeta(pp.page, pp.pageSize, total) },
   );

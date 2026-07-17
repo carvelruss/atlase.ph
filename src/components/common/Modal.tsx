@@ -15,15 +15,45 @@ export function Modal({ open, onClose, title, children, footer, size }: ModalPro
 
   useEffect(() => {
     if (!open) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    const focusable = () =>
+      Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      // Trap Tab focus within the dialog.
+      if (e.key === 'Tab') {
+        const items = focusable();
+        if (items.length === 0) return;
+        const first = items[0]!;
+        const last = items[items.length - 1]!;
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
+
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    dialogRef.current?.focus();
+    // Focus the first interactive element, falling back to the dialog container.
+    (focusable()[0] ?? dialogRef.current)?.focus();
+
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
+      previouslyFocused?.focus?.();
     };
   }, [open, onClose]);
 

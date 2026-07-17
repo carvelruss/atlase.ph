@@ -15,6 +15,7 @@ import {
 import { getDb, type Database } from '../db';
 import { ensureUniqueSlug } from '../slugs';
 import { notFound } from '../errors';
+import { sanitizeHtml } from '../../../shared/utils/sanitize';
 import { PRODUCT_STATUSES } from '../../../shared/constants/index';
 import type { Env } from '../env';
 
@@ -87,7 +88,7 @@ function productColumnsFromInput(input: ProductInput, slug: string) {
     name: input.name,
     slug,
     shortDescription: input.shortDescription ?? null,
-    description: input.description ?? null,
+    description: input.description ? sanitizeHtml(input.description) : null,
     status: input.status,
     price: input.price,
     compareAtPrice: input.compareAtPrice ?? null,

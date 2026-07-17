@@ -1,7 +1,7 @@
 import { and, asc, eq, sql } from 'drizzle-orm';
 import type { Fn } from '../../lib/env';
 import { getDb, schema } from '../../lib/db';
-import { ok } from '../../lib/response';
+import { okPublic } from '../../lib/response';
 
 interface StoreDoc {
   name?: string;
@@ -40,7 +40,7 @@ export const onRequestGet: Fn = async ({ env, data }) => {
       .map((item) => ({ label: item.label, url: item.url }));
   }
 
-  return ok(
+  return okPublic(
     {
       store: {
         name: store.name ?? env.PUBLIC_STORE_NAME ?? 'Atlase',

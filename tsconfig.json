@@ -27,6 +27,6 @@
       "@shared/*": ["shared/*"]
     }
   },
-  "include": ["src", "shared", "tests/unit", "tests/component", "vite.config.ts"],
+  "include": ["src", "shared", "tests/setup.ts", "tests/unit", "tests/component", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "functions", "tests/e2e"]
 }

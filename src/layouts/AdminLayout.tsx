@@ -5,6 +5,7 @@ import { apiFetch } from '@/lib/api';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { Spinner } from '@/components/feedback/Spinner';
+import { useSeo } from '@/hooks/useSeo';
 import styles from './AdminLayout.module.scss';
 
 interface OverviewCounts {
@@ -14,6 +15,7 @@ interface OverviewCounts {
 
 export function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  useSeo({ title: 'Admin', noindex: true });
 
   // Live sidebar badge counts (best-effort; absent until the endpoint exists).
   const { data: counts } = useQuery({
@@ -25,6 +27,7 @@ export function AdminLayout() {
 
   return (
     <div className={styles.shell}>
+      <a href="#main-content" className="at-skip-link">Skip to content</a>
       <aside className={styles.sidebarDesktop}>
         <AdminSidebar counts={counts as Record<string, number> | undefined} />
       </aside>
@@ -43,7 +46,7 @@ export function AdminLayout() {
 
       <div className={styles.main}>
         <AdminTopbar onOpenMenu={() => setMobileOpen(true)} />
-        <main className={styles.content}>
+        <main className={styles.content} id="main-content">
           <Suspense fallback={<Spinner center />}>
             <Outlet />
           </Suspense>

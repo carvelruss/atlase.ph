@@ -32,6 +32,10 @@
 
 - All request bodies/queries validated with **Zod** (`functions/lib/validation.ts`); failures
   return a `400 VALIDATION_ERROR` with per-field messages and never reach business logic.
+- **HTML sanitization**: admin-authored rich text (product descriptions, pages, blog bodies) is
+  passed through an allowlist sanitizer (`shared/utils/sanitize.ts`) **at save time** — scripts,
+  event handlers, `javascript:`/unsafe URLs, and disallowed tags are stripped before storage
+  (defense-in-depth against stored XSS, even though only the trusted owner authors content).
 
 ## Server-authoritative commerce
 
@@ -42,9 +46,13 @@
 ## Transport & headers
 
 - Baseline security headers on every response (`X-Content-Type-Options`, `X-Frame-Options: DENY`,
-  `Referrer-Policy`, `Cross-Origin-Opener-Policy`); API responses add `Cache-Control: no-store`.
-- `public/_headers` sets a Content-Security-Policy, `Permissions-Policy`, and caching for static
-  assets in production. Admin routes are `noindex`.
+  `Referrer-Policy`, `Cross-Origin-Opener-Policy`, `Strict-Transport-Security`); API responses add
+  `Cache-Control: no-store`, while anonymous public catalog/content responses are edge-cacheable.
+- `public/_headers` sets a Content-Security-Policy (`script-src 'self'`, `frame-ancestors 'none'`,
+  `object-src 'none'`, `frame-src 'none'`, …), `Permissions-Policy`, HSTS, and immutable caching
+  for hashed assets in production.
+- Admin, cart, checkout, and account routes are `noindex` (via `useSeo`) **and** disallowed in
+  `robots.txt`; a dynamic `sitemap.xml` lists only public, published content.
 
 ## Secrets
 

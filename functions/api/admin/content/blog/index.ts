@@ -5,6 +5,7 @@ import { parseJsonBody } from '../../../../lib/validation';
 import { ok, created } from '../../../../lib/response';
 import { ensureUniqueSlug } from '../../../../lib/slugs';
 import { blogPostSchema, type BlogPostInput } from '../../../../lib/validators';
+import { sanitizeHtml } from '../../../../../shared/utils/sanitize';
 import { writeAudit } from '../../../../lib/audit';
 
 export function blogValues(input: BlogPostInput, slug: string) {
@@ -14,7 +15,7 @@ export function blogValues(input: BlogPostInput, slug: string) {
     slug,
     excerpt: input.excerpt ?? null,
     overview: input.overview ?? null,
-    body: input.body ?? null,
+    body: input.body ? sanitizeHtml(input.body) : null,
     featuredImageAssetId: input.featuredImageAssetId ?? null,
     imageCaption: input.imageCaption ?? null,
     author: input.author ?? null,

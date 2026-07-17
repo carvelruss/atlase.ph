@@ -3,10 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import { Spinner } from '@/components/feedback/Spinner';
 import { NotFoundPage } from './NotFoundPage';
+import { useSeo } from '@/hooks/useSeo';
 
 interface PageContent {
   title: string;
   content: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 }
 
 export function StorefrontContentPage() {
@@ -17,6 +20,8 @@ export function StorefrontContentPage() {
     enabled: !!slug,
     retry: false,
   });
+
+  useSeo({ title: data?.seoTitle || data?.title, description: data?.seoDescription || undefined });
 
   if (isLoading) return <Spinner center />;
   if (isError || !data) return <NotFoundPage />;

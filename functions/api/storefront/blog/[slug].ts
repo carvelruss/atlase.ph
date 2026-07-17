@@ -1,7 +1,7 @@
 import { and, eq, sql } from 'drizzle-orm';
 import type { Fn } from '../../../lib/env';
 import { getDb, schema } from '../../../lib/db';
-import { ok } from '../../../lib/response';
+import { okPublic } from '../../../lib/response';
 import { notFound } from '../../../lib/errors';
 
 export const onRequestGet: Fn = async ({ params, env, data }) => {
@@ -26,5 +26,5 @@ export const onRequestGet: Fn = async ({ params, env, data }) => {
     .where(and(eq(schema.blogPosts.slug, slug), eq(schema.blogPosts.status, 'published')))
     .limit(1);
   if (!rows[0]) throw notFound('Post not found.');
-  return ok(rows[0], { requestId: data.requestId });
+  return okPublic(rows[0], { requestId: data.requestId });
 };

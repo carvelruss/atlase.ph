@@ -17,8 +17,9 @@ export function StorefrontLayout() {
 
   return (
     <div className="d-flex flex-column min-vh-100">
+      <a href="#main-content" className="at-skip-link">Skip to content</a>
       <StoreHeader storeName={storeName} nav={headerNav} cartCount={cartCount} />
-      <main className="flex-grow-1">
+      <main className="flex-grow-1" id="main-content">
         <Suspense fallback={<Spinner center />}>
           <Outlet />
         </Suspense>

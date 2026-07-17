@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import type { Fn } from '../../../lib/env';
 import { getDb, schema } from '../../../lib/db';
 import { parsePageParams } from '../../../lib/pagination';
-import { ok, paginationMeta } from '../../../lib/response';
+import { okPublic, paginationMeta } from '../../../lib/response';
 import { notFound } from '../../../lib/errors';
 import { listPublicProducts } from '../../../lib/services/storefront';
 
@@ -21,7 +21,7 @@ export const onRequestGet: Fn = async ({ request, params, env, data }) => {
     pageSize: pp.pageSize,
   });
 
-  return ok(
+  return okPublic(
     {
       category: { name: category.name, slug: category.slug, description: category.description, seoTitle: category.seoTitle, seoDescription: category.seoDescription },
       items,

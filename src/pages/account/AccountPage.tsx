@@ -7,9 +7,11 @@ import { useToast } from '@/components/feedback/Toast';
 import { ApiError } from '@/lib/api';
 import { money, formatDate } from '@/lib/format';
 import { useCustomerSession, useCustomerLogin, useCustomerRegister, useCustomerLogout, useAccountOrders } from '@/features/account/api';
+import { useSeo } from '@/hooks/useSeo';
 
 export function AccountPage() {
   const { data: session, isLoading } = useCustomerSession();
+  useSeo({ title: 'Your account', noindex: true });
   if (isLoading) return <Spinner center />;
   return session?.authenticated ? <Dashboard /> : <AuthForms />;
 }
