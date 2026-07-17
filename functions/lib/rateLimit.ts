@@ -33,7 +33,9 @@ export async function rateLimit(
   state.count += 1;
   const allowed = state.count <= limit;
   const ttl = Math.max(1, Math.ceil((state.resetAt - now) / 1000));
-  await env.CACHE.put(cacheKey, JSON.stringify(state), { expirationTtl: ttl });
+  // Cloudflare KV requires expirationTtl >= 60s. Storing the entry a little longer
+  // than the window is harmless because we reset based on resetAt, not expiry.
+  await env.CACHE.put(cacheKey, JSON.stringify(state), { expirationTtl: Math.max(60, ttl) });
 
   return {
     allowed,

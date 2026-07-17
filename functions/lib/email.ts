@@ -24,12 +24,29 @@ export async function sendEmail(env: Env, msg: EmailMessage): Promise<{ ok: bool
   let error: string | undefined;
 
   try {
-    if (provider === 'console' || !env.EMAIL_API_KEY) {
+    if (provider === 'resend' && env.EMAIL_API_KEY) {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.EMAIL_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: env.EMAIL_FROM ?? 'Atlase <onboarding@resend.dev>',
+          to: [msg.to],
+          subject: msg.subject,
+          html: msg.html,
+          text: msg.text,
+        }),
+      });
+      if (!res.ok) {
+        ok = false;
+        error = `Resend responded ${res.status}: ${await res.text().catch(() => '')}`.slice(0, 300);
+      }
+    } else if (provider === 'console' || !env.EMAIL_API_KEY) {
+      // Dev / unconfigured: log instead of sending.
       console.log(`📧 [email:${provider}] to=${msg.to} subject="${msg.subject}"`);
       console.log(msg.text ?? msg.html);
     } else {
-      // Provider implementations are added in Phase 5. Until then, log and mark queued.
-      console.log(`📧 [email:${provider}] (provider adapter pending) to=${msg.to}`);
+      // Postmark/SendGrid adapters follow the same shape; not yet wired.
+      console.log(`📧 [email:${provider}] (adapter not configured) to=${msg.to}`);
     }
   } catch (err) {
     ok = false;

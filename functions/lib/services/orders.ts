@@ -14,6 +14,8 @@ import {
 } from '../../../shared/db/schema/index';
 import { getDb, type Database } from '../db';
 import { notFound, badRequest } from '../errors';
+import { sendEmail } from '../email';
+import { formatMoney } from '../../../shared/utils/money';
 import type { Env } from '../env';
 
 export interface OrderListParams {
@@ -146,6 +148,17 @@ export async function fulfillOrder(env: Env, id: number, input: FulfillInput, ac
   await db.update(orders).set({ status: 'shipped', fulfillmentStatus: 'shipped', updatedAt: new Date() }).where(eq(orders.id, id));
   await recordStatus(db, id, 'fulfillment_status', order.fulfillmentStatus, 'shipped', actorId);
   await recordStatus(db, id, 'status', order.status, 'shipped', actorId);
+
+  const tracking = input.trackingNumber ? `<p>Tracking: <strong>${input.trackingNumber}</strong>${input.courier ? ` (${input.courier})` : ''}</p>` : '';
+  void sendEmail(env, {
+    to: order.email,
+    subject: `Your order ${order.orderNumber} has shipped`,
+    templateKey: 'order_shipped',
+    html: `<p>Good news — order <strong>${order.orderNumber}</strong> is on its way.</p>${tracking}`,
+    referenceType: 'order',
+    referenceId: id,
+  });
+
   return getAdminOrder(env, id);
 }
 
@@ -184,6 +197,16 @@ export async function cancelOrder(env: Env, id: number, restock: boolean, actorI
   await db.update(orders).set({ status: 'cancelled', cancelledAt: new Date(), updatedAt: new Date() }).where(eq(orders.id, id));
   await db.update(payments).set({ status: 'voided', updatedAt: new Date() }).where(and(eq(payments.orderId, id), eq(payments.status, 'pending')));
   await recordStatus(db, id, 'status', order.status, 'cancelled', actorId);
+
+  void sendEmail(env, {
+    to: order.email,
+    subject: `Order ${order.orderNumber} cancelled`,
+    templateKey: 'order_cancelled',
+    html: `<p>Your order <strong>${order.orderNumber}</strong> has been cancelled.${restock ? '' : ''}</p>`,
+    referenceType: 'order',
+    referenceId: id,
+  });
+
   return getAdminOrder(env, id);
 }
 
@@ -209,6 +232,16 @@ export async function refundOrder(env: Env, id: number, amount: number, reason: 
 
   if (restock) await restockOrder(db, id, order.orderNumber);
   await recordStatus(db, id, 'payment_status', order.paymentStatus, fullyRefunded ? 'refunded' : 'partially_refunded', actorId);
+
+  void sendEmail(env, {
+    to: order.email,
+    subject: `Refund issued for order ${order.orderNumber}`,
+    templateKey: 'refund_confirmation',
+    html: `<p>We've issued a refund of <strong>${formatMoney(amount, order.currency)}</strong> for order ${order.orderNumber}.</p>`,
+    referenceType: 'order',
+    referenceId: id,
+  });
+
   return getAdminOrder(env, id);
 }
 

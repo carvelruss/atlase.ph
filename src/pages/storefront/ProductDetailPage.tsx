@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useStorefrontProduct } from '@/features/storefront/catalogApi';
+import { track } from '@/features/storefront/tracker';
 import { useAddToCart } from '@/features/cart/api';
 import { useToast } from '@/components/feedback/Toast';
 import { ProductGrid } from '@/components/storefront/ProductGrid';
@@ -20,6 +21,10 @@ export function ProductDetailPage() {
   const [selected, setSelected] = useState<Record<number, number>>({});
   const [activeImage, setActiveImage] = useState(0);
   const [qty, setQty] = useState(1);
+
+  useEffect(() => {
+    if (product) track('product_view', { productId: product.id });
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectedVariant = useMemo(() => {
     if (!product) return null;

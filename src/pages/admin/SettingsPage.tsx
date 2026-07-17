@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Spinner } from '@/components/feedback/Spinner';
 import { useToast } from '@/components/feedback/Toast';
@@ -82,7 +83,16 @@ export function SettingsPage() {
   const tab = TABS.find((t) => t.group === active)!;
   return (
     <div>
-      <PageHeader title="Settings" description="Configure your store." />
+      <PageHeader
+        title="Settings"
+        description="Configure your store."
+        actions={
+          <>
+            <Link to="/admin/settings/notifications" className="btn btn-sm btn-outline-secondary"><i className="bi bi-envelope me-1" />Notifications</Link>
+            <Link to="/admin/settings/audit" className="btn btn-sm btn-outline-secondary"><i className="bi bi-clipboard-check me-1" />Audit log</Link>
+          </>
+        }
+      />
       <ul className="nav nav-pills mb-3 flex-wrap gap-1">
         {TABS.map((t) => (
           <li className="nav-item" key={t.group}>

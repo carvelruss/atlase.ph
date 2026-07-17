@@ -104,3 +104,10 @@ export async function hmacVerify(secret: string, data: string, signature: string
   const expected = await hmacSign(secret, data);
   return timingSafeEqual(expected, signature);
 }
+
+/** HMAC-SHA256 as lowercase hex (used by Stripe/PayMongo-style webhook signatures). */
+export async function hmacHex(secret: string, data: string): Promise<string> {
+  const key = await importHmacKey(secret);
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
+  return bytesToHex(new Uint8Array(sig));
+}

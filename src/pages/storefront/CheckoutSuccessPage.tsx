@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { money } from '@/lib/format';
+import { track } from '@/features/storefront/tracker';
 
 interface OrderState {
   orderNumber: string;
@@ -10,6 +12,10 @@ interface OrderState {
 export function CheckoutSuccessPage() {
   const location = useLocation();
   const order = (location.state as { order?: OrderState } | null)?.order ?? null;
+
+  useEffect(() => {
+    if (order) track('purchase', { value: order.grandTotal });
+  }, [order]);
 
   return (
     <div className="container py-5">

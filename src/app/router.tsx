@@ -36,6 +36,15 @@ const NavigationPage = lazy(() => import('@/pages/admin/content/NavigationPage')
 const HomepageEditorPage = lazy(() => import('@/pages/admin/appearance/HomepageEditorPage').then((m) => ({ default: m.HomepageEditorPage })));
 const ThemeEditorPage = lazy(() => import('@/pages/admin/appearance/ThemeEditorPage').then((m) => ({ default: m.ThemeEditorPage })));
 const SettingsPage = lazy(() => import('@/pages/admin/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+const SalesAnalyticsPage = lazy(() => import('@/pages/admin/analytics/SalesAnalyticsPage').then((m) => ({ default: m.SalesAnalyticsPage })));
+const TrafficAnalyticsPage = lazy(() => import('@/pages/admin/analytics/TrafficAnalyticsPage').then((m) => ({ default: m.TrafficAnalyticsPage })));
+const ProductAnalyticsPage = lazy(() => import('@/pages/admin/analytics/ProductAnalyticsPage').then((m) => ({ default: m.ProductAnalyticsPage })));
+const CustomerAnalyticsPage = lazy(() => import('@/pages/admin/analytics/CustomerAnalyticsPage').then((m) => ({ default: m.CustomerAnalyticsPage })));
+const TransactionsPage = lazy(() => import('@/pages/admin/payments/TransactionsPage').then((m) => ({ default: m.TransactionsPage })));
+const RefundsPage = lazy(() => import('@/pages/admin/payments/RefundsPage').then((m) => ({ default: m.RefundsPage })));
+const IntegrationsPage = lazy(() => import('@/pages/admin/IntegrationsPage').then((m) => ({ default: m.IntegrationsPage })));
+const AuditLogsPage = lazy(() => import('@/pages/admin/AuditLogsPage').then((m) => ({ default: m.AuditLogsPage })));
+const NotificationsPage = lazy(() => import('@/pages/admin/NotificationsPage').then((m) => ({ default: m.NotificationsPage })));
 
 const StorefrontContentPage = lazy(() => import('@/pages/storefront/StorefrontContentPage').then((m) => ({ default: m.StorefrontContentPage })));
 const BlogListPage = lazy(() => import('@/pages/storefront/BlogListPage').then((m) => ({ default: m.BlogListPage })));
@@ -117,13 +126,13 @@ const adminAppRoutes: RouteObject = {
         { path: 'marketing/campaigns', element: ph('Campaigns', 'Phase 5', 'bi-megaphone') },
         { path: 'marketing/loyalty', element: <LoyaltyPage /> },
 
-        { path: 'analytics/sales', element: ph('Sales analytics', 'Phase 5', 'bi-graph-up') },
-        { path: 'analytics/traffic', element: ph('Traffic analytics', 'Phase 5', 'bi-bar-chart') },
-        { path: 'analytics/products', element: ph('Product analytics', 'Phase 5', 'bi-box') },
-        { path: 'analytics/customers', element: ph('Customer analytics', 'Phase 5', 'bi-people') },
+        { path: 'analytics/sales', element: <SalesAnalyticsPage /> },
+        { path: 'analytics/traffic', element: <TrafficAnalyticsPage /> },
+        { path: 'analytics/products', element: <ProductAnalyticsPage /> },
+        { path: 'analytics/customers', element: <CustomerAnalyticsPage /> },
 
-        { path: 'payments/transactions', element: ph('Transactions', 'Phase 5', 'bi-credit-card') },
-        { path: 'payments/refunds', element: ph('Refunds', 'Phase 5', 'bi-arrow-counterclockwise') },
+        { path: 'payments/transactions', element: <TransactionsPage /> },
+        { path: 'payments/refunds', element: <RefundsPage /> },
 
         { path: 'content/pages', element: <PagesPage /> },
         { path: 'content/pages/new', element: <PageEditorPage /> },
@@ -137,8 +146,10 @@ const adminAppRoutes: RouteObject = {
         { path: 'appearance/theme', element: <ThemeEditorPage /> },
         { path: 'appearance/homepage', element: <HomepageEditorPage /> },
 
-        { path: 'integrations', element: ph('Integrations', 'Phase 5', 'bi-plug') },
+        { path: 'integrations', element: <IntegrationsPage /> },
         { path: 'settings', element: <SettingsPage /> },
+        { path: 'settings/audit', element: <AuditLogsPage /> },
+        { path: 'settings/notifications', element: <NotificationsPage /> },
         { path: 'settings/*', element: <SettingsPage /> },
 
         { path: '*', element: ph('Not found', 'this section', 'bi-question-circle') },

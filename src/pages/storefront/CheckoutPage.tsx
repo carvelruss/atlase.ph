@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCart } from '@/features/cart/api';
+import { track } from '@/features/storefront/tracker';
 import { useShippingRates, useApplyDiscount, useCompleteCheckout, type ShippingOption, type DiscountResult } from '@/features/checkout/api';
 import { Spinner } from '@/components/feedback/Spinner';
 import { useToast } from '@/components/feedback/Toast';
@@ -60,6 +61,10 @@ export function CheckoutPage() {
 
   const province = watch('province');
   const country = watch('country');
+
+  useEffect(() => {
+    track('checkout_start');
+  }, []);
 
   // Fetch shipping rates when the destination is known.
   useEffect(() => {

@@ -1,6 +1,7 @@
 export const ADMIN_SESSION_COOKIE = 'atl_admin_session';
 export const CUSTOMER_SESSION_COOKIE = 'atl_customer_session';
 export const CART_COOKIE = 'atl_cart';
+export const ANALYTICS_COOKIE = 'atl_sid';
 
 export interface CookieOptions {
   maxAge?: number; // seconds

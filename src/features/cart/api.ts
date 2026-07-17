@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
+import { track } from '@/features/storefront/tracker';
 import type { CartView } from '@/features/catalog/types';
 
 const CART_KEY = ['cart'] as const;
@@ -22,7 +23,10 @@ export function useAddToCart() {
   return useMutation({
     mutationFn: (body: { variantId: number; quantity: number }) =>
       apiFetch<CartView>('/api/storefront/cart/items', { method: 'POST', body }),
-    onSuccess: (data) => qc.setQueryData(CART_KEY, data),
+    onSuccess: (data) => {
+      qc.setQueryData(CART_KEY, data);
+      track('add_to_cart');
+    },
   });
 }
 
