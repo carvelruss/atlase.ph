@@ -49,6 +49,14 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: false,
+    // Frontend runs here with HMR; the API + Cloudflare bindings (D1/R2/KV) run in a
+    // separate `wrangler pages dev` process on :8788. Proxy /api there so the browser
+    // sees a single same-origin app (keeps session cookies / CSRF working in dev).
+    // Target must be 127.0.0.1 (not `localhost`): on Windows `localhost` resolves to
+    // IPv6 ::1 first, but wrangler binds IPv4 127.0.0.1 only, so the proxy would hang.
+    proxy: {
+      '/api': 'http://127.0.0.1:8788',
+    },
   },
   test: {
     globals: true,
