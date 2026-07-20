@@ -16,7 +16,7 @@ export function StoreFooter({ storeName, supportEmail, nav }: StoreFooterProps) 
         <div className="row g-4">
           <div className="col-12 col-md-4">
             <div className="d-flex align-items-center gap-2 mb-2">
-              <img src="/favicon.svg" alt="" width={26} height={26} />
+              <img src="/atlase-logo-white.svg" alt="" width={26} height={26} />
               <span className="fw-bold text-white fs-5">{storeName}</span>
             </div>
             <p className="small mb-0" style={{ maxWidth: 320 }}>

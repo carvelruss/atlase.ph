@@ -9,6 +9,11 @@ export function money(minorUnits: number): string {
   return sharedFormatMoney(minorUnits, CURRENCY, LOCALE);
 }
 
+/** Like {@link money} but drops the ".00" on whole amounts, e.g. 249500 -> "₱2,495". */
+export function moneyShort(minorUnits: number): string {
+  return money(minorUnits).replace(/\.00$/, '');
+}
+
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat(LOCALE).format(value);
 }

@@ -1,95 +1,41 @@
 export interface NavChild {
   label: string;
   to: string;
+  badgeKey?: string; // optional live count key (wired to overview counts)
 }
 
 export interface NavItem {
   label: string;
   icon: string; // bootstrap-icons class
-  to?: string; // leaf link
-  children?: NavChild[];
+  to: string; // leaf link
   badgeKey?: string; // optional live count key (wired to overview counts)
+  children?: NavChild[]; // revealed inline when the section is active
 }
 
-/** Admin sidebar information architecture (spec §4). */
+/**
+ * Admin sidebar information architecture — flat, single-level navigation matching
+ * the seller-console reference design. The active section reveals its sub-pages
+ * inline beneath it.
+ */
 export const ADMIN_NAV: NavItem[] = [
-  { label: 'Dashboard', icon: 'bi-speedometer2', to: '/admin' },
+  { label: 'Dashboard', icon: 'bi-house-door', to: '/admin' },
   {
     label: 'Orders',
-    icon: 'bi-bag',
+    icon: 'bi-receipt',
+    to: '/admin/orders',
     badgeKey: 'ordersPending',
     children: [
-      { label: 'All Orders', to: '/admin/orders' },
-      { label: 'Abandoned Checkouts', to: '/admin/orders/abandoned' },
-      { label: 'Returns', to: '/admin/orders/returns' },
+      { label: 'All orders', to: '/admin/orders', badgeKey: 'ordersPending' },
+      { label: 'Abandoned', to: '/admin/orders/abandoned' },
     ],
   },
-  {
-    label: 'Shipping',
-    icon: 'bi-truck',
-    children: [
-      { label: 'Shipments', to: '/admin/shipping/shipments' },
-      { label: 'Delivery Methods', to: '/admin/shipping/methods' },
-      { label: 'Shipping Zones', to: '/admin/shipping/zones' },
-    ],
-  },
-  {
-    label: 'Products',
-    icon: 'bi-box-seam',
-    children: [
-      { label: 'All Products', to: '/admin/products' },
-      { label: 'Categories', to: '/admin/categories' },
-      { label: 'Collections', to: '/admin/collections' },
-      { label: 'Inventory', to: '/admin/inventory' },
-      { label: 'Reviews', to: '/admin/reviews' },
-    ],
-  },
-  { label: 'Customers', icon: 'bi-people', to: '/admin/customers' },
-  {
-    label: 'Marketing',
-    icon: 'bi-megaphone',
-    children: [
-      { label: 'Discounts', to: '/admin/marketing/discounts' },
-      { label: 'Campaigns', to: '/admin/marketing/campaigns' },
-      { label: 'Loyalty', to: '/admin/marketing/loyalty' },
-    ],
-  },
-  {
-    label: 'Analytics',
-    icon: 'bi-graph-up',
-    children: [
-      { label: 'Sales', to: '/admin/analytics/sales' },
-      { label: 'Traffic', to: '/admin/analytics/traffic' },
-      { label: 'Products', to: '/admin/analytics/products' },
-      { label: 'Customers', to: '/admin/analytics/customers' },
-    ],
-  },
-  {
-    label: 'Payments',
-    icon: 'bi-credit-card',
-    children: [
-      { label: 'Transactions', to: '/admin/payments/transactions' },
-      { label: 'Refunds', to: '/admin/payments/refunds' },
-    ],
-  },
-  {
-    label: 'Content',
-    icon: 'bi-file-earmark-text',
-    children: [
-      { label: 'Pages', to: '/admin/content/pages' },
-      { label: 'Blog', to: '/admin/content/blog' },
-      { label: 'Media Library', to: '/admin/content/media' },
-      { label: 'Navigation', to: '/admin/content/navigation' },
-    ],
-  },
-  {
-    label: 'Appearance',
-    icon: 'bi-palette',
-    children: [
-      { label: 'Theme Editor', to: '/admin/appearance/theme' },
-      { label: 'Homepage Sections', to: '/admin/appearance/homepage' },
-    ],
-  },
-  { label: 'Integrations', icon: 'bi-plug', to: '/admin/integrations' },
+  { label: 'Shipping', icon: 'bi-truck', to: '/admin/shipping/methods' },
+  { label: 'Products', icon: 'bi-grid', to: '/admin/products' },
+  { label: 'Analytics', icon: 'bi-bar-chart', to: '/admin/analytics/sales' },
+  { label: 'Payments', icon: 'bi-credit-card', to: '/admin/payments/transactions' },
+  { label: 'Discounts', icon: 'bi-percent', to: '/admin/marketing/discounts' },
+  { label: 'Audience', icon: 'bi-people', to: '/admin/customers' },
+  { label: 'Appearance', icon: 'bi-brush', to: '/admin/appearance/theme' },
+  { label: 'Plugins', icon: 'bi-lightning-charge', to: '/admin/integrations' },
   { label: 'Settings', icon: 'bi-gear', to: '/admin/settings' },
 ];

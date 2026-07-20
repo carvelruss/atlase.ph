@@ -5,10 +5,13 @@ export interface OrderListItem {
   id: number;
   orderNumber: string;
   email: string;
+  customerFirstName: string | null;
+  customerLastName: string | null;
   createdAt: string;
   grandTotal: number;
   status: string;
   paymentStatus: string;
+  paymentMethod: string | null;
   fulfillmentStatus: string;
   shippingMethodName: string | null;
   itemCount: number;
@@ -37,20 +40,30 @@ export interface OrderDetail {
   customerNote: string | null;
   internalNote: string | null;
   createdAt: string;
-  items: { id: number; name: string; variantTitle: string | null; sku: string | null; quantity: number; unitPrice: number; totalPrice: number }[];
+  items: { id: number; productId: number | null; name: string; variantTitle: string | null; sku: string | null; quantity: number; unitPrice: number; totalPrice: number; imageUrl: string | null }[];
   addresses: { type: string; firstName: string | null; lastName: string | null; phone: string | null; line1: string | null; line2: string | null; city: string | null; province: string | null; postalCode: string | null; country: string }[];
   payments: { id: number; provider: string; method: string | null; amount: number; status: string }[];
   refunds: { id: number; amount: number; reason: string | null; status: string; createdAt: string }[];
   shipments: { id: number; courier: string | null; trackingNumber: string | null; trackingUrl: string | null; status: string; shippedAt: string | null }[];
-  history: { id: number; field: string; fromValue: string | null; toValue: string; createdAt: string }[];
+  history: { id: number; field: string; fromValue: string | null; toValue: string; actorType: string; createdAt: string }[];
   notes: { id: number; body: string; visibility: string; createdAt: string }[];
   customer: { id: number; email: string; firstName: string | null; lastName: string | null; ordersCount: number; totalSpent: number } | null;
 }
 
-export function useOrders(params: { page?: number; q?: string; status?: string; paymentStatus?: string; fulfillmentStatus?: string }) {
+export function useOrders(params: {
+  page?: number;
+  q?: string;
+  status?: string;
+  paymentStatus?: string;
+  fulfillmentStatus?: string;
+  range?: string;
+}) {
   return useQuery({
     queryKey: ['admin-orders', params],
-    queryFn: () => apiFetchWithMeta<{ items: OrderListItem[] }>('/api/admin/orders', { query: params }),
+    queryFn: () =>
+      apiFetchWithMeta<{ items: OrderListItem[]; statusCounts: Record<string, number> }>('/api/admin/orders', {
+        query: params,
+      }),
     placeholderData: (prev) => prev,
   });
 }

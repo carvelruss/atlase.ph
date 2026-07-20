@@ -173,7 +173,7 @@ add(
 
 // --- Example customer --------------------------------------------------------
 add(
-  `INSERT OR IGNORE INTO customers (id, email, first_name, last_name, phone, is_guest, marketing_consent, status, orders_count, total_spent, last_order_at) VALUES (1, 'juan.delacruz@example.com', 'Juan', 'Dela Cruz', '+63 917 000 0000', 0, 1, 'active', 1, 89800, ${now});`,
+  `INSERT OR IGNORE INTO customers (id, email, first_name, last_name, phone, is_guest, marketing_consent, status, orders_count, total_spent, last_order_at) VALUES (1, 'juan.delacruz@example.com', 'Juan', 'Dela Cruz', '+63 917 000 0000', 0, 1, 'active', 1, 97800, ${now});`,
 );
 
 // --- Example discount --------------------------------------------------------

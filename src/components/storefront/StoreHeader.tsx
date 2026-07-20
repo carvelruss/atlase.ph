@@ -33,7 +33,7 @@ export function StoreHeader({ storeName, nav, announcement, cartCount = 0 }: Sto
           </button>
 
           <Link to="/" className={styles.logo}>
-            <img src="/favicon.svg" alt="" width={28} height={28} />
+            <img src="/atlase-logo-black.svg" alt="" width={28} height={28} />
             <span>{storeName}</span>
           </Link>
 

@@ -13,6 +13,12 @@ interface ModalProps {
 export function Modal({ open, onClose, title, children, footer, size }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  // Keep the latest onClose in a ref so the focus/keydown effect below can depend
+  // only on `open`. Otherwise a fresh inline `onClose` on every parent render would
+  // re-run the effect and steal focus from inputs while the user is typing.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -26,7 +32,7 @@ export function Modal({ open, onClose, title, children, footer, size }: ModalPro
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
         return;
       }
       // Trap Tab focus within the dialog.
@@ -47,15 +53,17 @@ export function Modal({ open, onClose, title, children, footer, size }: ModalPro
 
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    // Focus the first interactive element, falling back to the dialog container.
-    (focusable()[0] ?? dialogRef.current)?.focus();
+    // On open, focus the first form field if there is one, else the first
+    // interactive element, falling back to the dialog container.
+    const firstField = dialogRef.current?.querySelector<HTMLElement>('input, textarea, select');
+    (firstField ?? focusable()[0] ?? dialogRef.current)?.focus();
 
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
       previouslyFocused?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 

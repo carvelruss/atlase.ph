@@ -82,7 +82,7 @@ POST        /api/webhooks/:provider
 
 ```bash
 # Bootstrap auth state
-curl -s http://localhost:8788/api/auth/admin/session
+curl -s 1http://localhost:8788/api/auth/admin/session
 
 # First-run setup (also logs you in)
 curl -s -c jar.txt -X POST http://localhost:8788/api/auth/admin/setup \

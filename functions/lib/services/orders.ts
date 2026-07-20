@@ -1,4 +1,4 @@
-import { and, desc, eq, like, or, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, gte, inArray, like, ne, or, sql } from 'drizzle-orm';
 import {
   orders,
   orderItems,
@@ -13,6 +13,7 @@ import {
   customers,
 } from '../../../shared/db/schema/index';
 import { getDb, type Database } from '../db';
+import { rangeStart } from '../dateRange';
 import { notFound, badRequest } from '../errors';
 import { sendEmail } from '../email';
 import { formatMoney } from '../../../shared/utils/money';
@@ -22,42 +23,71 @@ export interface OrderListParams {
   offset: number;
   pageSize: number;
   search: string | null;
-  status: string | null;
+  status: string | null; // single status or comma-separated list
   paymentStatus: string | null;
   fulfillmentStatus: string | null;
+  range?: string | null;
 }
 
 export async function listAdminOrders(env: Env, p: OrderListParams) {
   const db = getDb(env);
-  const conditions = [];
+
+  // Base filters shared by the list AND the per-status facet counts — everything
+  // except the status filter itself, so the tab counts stay stable while you
+  // switch tabs. Drafts (abandoned/incomplete) never surface as real orders.
+  const baseConds = [ne(orders.status, 'draft')];
   if (p.search) {
-    conditions.push(or(like(orders.orderNumber, `%${p.search}%`), like(orders.email, `%${p.search}%`), like(orders.phone, `%${p.search}%`))!);
+    baseConds.push(or(like(orders.orderNumber, `%${p.search}%`), like(orders.email, `%${p.search}%`), like(orders.phone, `%${p.search}%`))!);
   }
-  if (p.status) conditions.push(eq(orders.status, p.status));
-  if (p.paymentStatus) conditions.push(eq(orders.paymentStatus, p.paymentStatus));
-  if (p.fulfillmentStatus) conditions.push(eq(orders.fulfillmentStatus, p.fulfillmentStatus));
-  const where = conditions.length ? and(...conditions) : undefined;
+  if (p.paymentStatus) baseConds.push(eq(orders.paymentStatus, p.paymentStatus));
+  if (p.fulfillmentStatus) baseConds.push(eq(orders.fulfillmentStatus, p.fulfillmentStatus));
+  if (p.range && p.range !== 'lifetime') {
+    baseConds.push(gte(orders.createdAt, rangeStart(p.range)));
+  }
+
+  const statusList = (p.status ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const where = statusList.length ? and(...baseConds, inArray(orders.status, statusList)) : and(...baseConds);
 
   const baseSelect = {
     id: orders.id,
     orderNumber: orders.orderNumber,
     email: orders.email,
+    customerFirstName: customers.firstName,
+    customerLastName: customers.lastName,
     createdAt: orders.createdAt,
     grandTotal: orders.grandTotal,
     status: orders.status,
     paymentStatus: orders.paymentStatus,
+    paymentMethod: orders.paymentMethod,
     fulfillmentStatus: orders.fulfillmentStatus,
     shippingMethodName: orders.shippingMethodName,
     itemCount: sql<number>`(SELECT coalesce(sum(quantity),0) FROM order_items WHERE order_id = orders.id)`,
   };
 
-  const listQuery = db.select(baseSelect).from(orders);
-  const rows = await (where ? listQuery.where(where) : listQuery).orderBy(desc(orders.createdAt)).limit(p.pageSize).offset(p.offset);
+  const [rows, countRows, facetRows] = await Promise.all([
+    db
+      .select(baseSelect)
+      .from(orders)
+      .leftJoin(customers, eq(customers.id, orders.customerId))
+      .where(where)
+      .orderBy(desc(orders.createdAt))
+      .limit(p.pageSize)
+      .offset(p.offset),
+    db.select({ n: sql<number>`count(*)` }).from(orders).where(where),
+    db
+      .select({ status: orders.status, n: sql<number>`count(*)` })
+      .from(orders)
+      .where(and(...baseConds))
+      .groupBy(orders.status),
+  ]);
 
-  const countQuery = db.select({ n: sql<number>`count(*)` }).from(orders);
-  const countRows = await (where ? countQuery.where(where) : countQuery);
+  const statusCounts: Record<string, number> = {};
+  for (const r of facetRows) statusCounts[r.status] = r.n;
 
-  return { items: rows, total: countRows[0]?.n ?? 0 };
+  return { items: rows, total: countRows[0]?.n ?? 0, statusCounts };
 }
 
 export async function getAdminOrder(env: Env, id: number) {
@@ -67,7 +97,20 @@ export async function getAdminOrder(env: Env, id: number) {
   if (!order) throw notFound('Order not found.');
 
   const [items, addresses, orderPayments, orderRefunds, orderShipments, history, notes, customer] = await Promise.all([
-    db.select().from(orderItems).where(eq(orderItems.orderId, id)),
+    db
+      .select({
+        ...getTableColumns(orderItems),
+        // Primary product image (lowest position) resolved to its public URL.
+        imageUrl: sql<string | null>`(
+          SELECT url FROM media_assets WHERE id = (
+            SELECT asset_id FROM product_images
+            WHERE product_id = ${orderItems.productId}
+            ORDER BY position ASC LIMIT 1
+          )
+        )`,
+      })
+      .from(orderItems)
+      .where(eq(orderItems.orderId, id)),
     db.select().from(orderAddresses).where(eq(orderAddresses.orderId, id)),
     db.select().from(payments).where(eq(payments.orderId, id)),
     db.select().from(refunds).where(eq(refunds.orderId, id)),

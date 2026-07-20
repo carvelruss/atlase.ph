@@ -16,7 +16,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
     >
       <div className="w-100" style={{ maxWidth: 420 }}>
         <div className="text-center mb-4">
-          <img src="/favicon.svg" alt="Atlase" width={44} height={44} className="mb-2" />
+          <img src="/atlase-logo-black.svg" alt="Atlase" width={44} height={44} className="mb-2" />
           <h1 className="h5 mb-0">Atlase Admin</h1>
         </div>
         <div className="at-card p-4 p-sm-5 shadow-sm">

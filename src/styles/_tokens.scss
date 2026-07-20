@@ -46,14 +46,15 @@
   --at-text-inverse: #f8fafc;
 
   // --- Sidebar (admin) ---------------------------------------------------------
-  --at-sidebar-bg: #0f172a; // slate-900
-  --at-sidebar-text: #cbd5e1; // slate-300
-  --at-sidebar-muted: #64748b;
-  --at-sidebar-heading: #94a3b8;
-  --at-sidebar-hover: #1e293b; // slate-800
-  --at-sidebar-active-bg: #4f46e5;
+  --at-sidebar-bg: #171717; // near-black console shell
+  --at-sidebar-text: #a3a3a3; // muted gray labels
+  --at-sidebar-muted: #737373;
+  --at-sidebar-heading: #d4d4d4;
+  --at-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --at-sidebar-active-bg: rgba(255, 255, 255, 0.1);
   --at-sidebar-active-text: #ffffff;
-  --at-sidebar-border: #1e293b;
+  --at-sidebar-border: rgba(255, 255, 255, 0.08);
+  --at-sidebar-brand: #2f80ed; // blue app mark
 
   // --- Focus / interaction -----------------------------------------------------
   --at-focus-ring: rgba(79, 70, 229, 0.35);
